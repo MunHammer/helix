@@ -43,6 +43,10 @@ a custom renderer (similar to Emacs) using wgpu.
 Note: Only certain languages have indentation definitions at the moment. Check
 `runtime/queries/<lang>/` for `indents.scm`.
 
+## Forks/PRs merged
+- [Steel](github.com/mattwparas/helix/tree/steel-event-system/)
+- [Rounded corners](helix-editor/helix#11497)
+
 # Installation
 
 [Installation documentation](https://docs.helix-editor.com/install.html).
