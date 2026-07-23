@@ -46,6 +46,7 @@ Note: Only certain languages have indentation definitions at the moment. Check
 ## Forks/PRs merged
 - [Steel](github.com/mattwparas/helix/tree/steel-event-system/)
 - [Rounded corners](helix-editor/helix#11497)
+- [Welcome screen](helix-editor/helix#15173)
 
 # Installation
 
