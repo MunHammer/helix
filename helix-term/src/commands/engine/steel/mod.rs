@@ -37,6 +37,7 @@ use helix_view::{
     },
     extension::{document_id_to_usize, steel_implementations::CustomStatusElement},
     graphics::CursorKind,
+    icons::ICONS,
     input::KeyEvent,
     theme::Color,
     DocumentId, Editor, Theme, ViewId,
@@ -827,15 +828,29 @@ fn ws_visible(config: &mut WhitespaceConfig, option: bool) {
 }
 
 fn ws_chars(config: &mut WhitespaceConfig, option: HashMap<SteelVal, char>) -> anyhow::Result<()> {
+    let icons = ICONS.load();
+    let whitespace_icons = icons.ui().r#virtual();
     for (k, v) in option {
         match k {
             SteelVal::StringV(s) | SteelVal::SymbolV(s) => match s.as_str() {
-                "space" => config.characters.space = v,
-                "tab" => config.characters.tab = v,
-                "nbsp" => config.characters.nbsp = v,
-                "nnbsp" => config.characters.nnbsp = v,
-                "newline" => config.characters.newline = v,
-                "tabpad" => config.characters.tabpad = v,
+                "space" => whitespace_icons
+                    .space()
+                    .set_glyph(Box::new(v.to_string()).leak()),
+                "tab" => whitespace_icons
+                    .tab()
+                    .set_glyph(Box::new(v.to_string()).leak()),
+                "nbsp" => whitespace_icons
+                    .nbsp()
+                    .set_glyph(Box::new(v.to_string()).leak()),
+                "nnbsp" => whitespace_icons
+                    .nnbsp()
+                    .set_glyph(Box::new(v.to_string()).leak()),
+                "newline" => whitespace_icons
+                    .newline()
+                    .set_glyph(Box::new(v.to_string()).leak()),
+                "tabpad" => whitespace_icons
+                    .tabpad()
+                    .set_glyph(Box::new(v.to_string()).leak()),
                 unknown => anyhow::bail!("Unrecognized key: {}", unknown),
             },
             other => anyhow::bail!("Unrecognized key option: {}", other),
@@ -1399,7 +1414,7 @@ fn current_theme_name(cx: &mut Context) -> SteelString {
 }
 
 fn current_theme(cx: &mut Context) -> SteelTheme {
-    SteelTheme(cx.editor.theme.clone())
+    SteelTheme((*cx.editor.theme).clone())
 }
 
 fn get_style(theme: &SteelTheme, name: SteelString) -> helix_view::theme::Style {
@@ -2988,7 +3003,12 @@ impl HelixConfiguration {
         }
 
         if let Some(separator) = config.get("separator") {
-            app_config.editor.statusline.separator = String::from_steelval(separator)?;
+            let icons = ICONS.load();
+            icons
+                .ui()
+                .statusline()
+                .separator()
+                .set_glyph(Box::new(String::from_steelval(separator)?).leak());
         }
 
         if let Some(normal_mode) = config.get("mode-normal") {
@@ -4107,7 +4127,7 @@ fn acquire_context_lock(
     match (&callback_fn, &place) {
         (SteelVal::Closure(_), Some(SteelVal::CustomStruct(_))) => {}
         _ => {
-            steel::stop!(TypeMismatch => "acquire-context-lock expected a 
+            steel::stop!(TypeMismatch => "acquire-context-lock expected a
                         callback function and a task object")
         }
     }
